@@ -37,6 +37,7 @@ String::tokens = ->
   MULTIPLELINECOMMENT = /\/[*](.|\n)*?[*]\//g
   COMPARISONOPERATOR = /[<>=!]=|[<>]/g
   ADDSUBOP = /[+-]/g
+  MULTDIVOP = /[*\/]/g
   ONECHAROPERATORS = /([=()&|;:,\.<>{}[\]])/g
 
   tokens = [
@@ -48,6 +49,7 @@ String::tokens = ->
     MULTIPLELINECOMMENT
     COMPARISONOPERATOR
     ADDSUBOP
+    MULTDIVOP
     ONECHAROPERATORS
   ]
 
@@ -113,6 +115,10 @@ String::tokens = ->
      # ADDSUBOP
     else if m = ADDSUBOP.bexec(this)
       result.push make("ADDSUBOP", getTok())
+
+     # MULTDIVOP
+    else if m = MULTDIVOP.bexec(this)
+      result.push make("MULTDIVOP", getTok())
     
     # single-character operator
     else if m = ONECHAROPERATORS.bexec(this)
@@ -199,13 +205,14 @@ parse = (input) ->
         right: right
     result
 
-  term = ->
+ term = ->
     result = factor()
-    if lookahead and lookahead.type is "*"
-      match "*"
-      right = term()
+    while lookahead and lookahead.type is "MULTDIVOP"
+      type = lookahead.value
+      match "MULTDIVOP"
+      right = factor()
       result =
-        type: "*"
+        type: type
         left: result
         right: right
     result

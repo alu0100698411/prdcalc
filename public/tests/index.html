@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mocha</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../global.css" />
+	<link rel="stylesheet" href="mocha.css" />
+	<script type="text/javascript" src="../ini.js"></script>
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+	<script type="text/html" id="template1">
+		<li> <span class = "<%= token.type %>"> <%= match %> </span></li>
+	</script>
+
+
+  </head>
+  <body>
+	<div id="mocha"></div>
+	<div id="wrapper">
+		<header>
+            <img src="../logo.png" alt="Logo">
+        </header>
+		<section>
+			<h1>Predictive Recursive Descent Parser</h1>		
+		</section>
+	</div>
+    <script src="chai.js"></script>
+    <script src="mocha.js"></script>
+    <script src="../ini.js"></script>
+    <script>mocha.setup('tdd')</script>
+    <script src="tests.js"></script>
+
+    <script>
+      mocha.run();
+    </script>
+  </body>
+</html>
+
+

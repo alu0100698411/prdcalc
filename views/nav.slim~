@@ -11,8 +11,6 @@ nav
     li
       a href=="http://en.wikipedia.org/wiki/Recursive_descent_parser"  title="Wikipedia" Wikipedia
     li
-      a href=="../public/tests/index.html"  title="Tests" Tests
-    li
       a href=="http://slim-lang.com/"  title="Slim" Slim
     li
       a href=="http://sass-lang.com/"  title="Sass" Sass

@@ -28,35 +28,31 @@ String::tokens = ->
   n = undefined # The number value.
   m = undefined # Matching
   result = [] # An array to hold the results.
-
-  WHITES = /\s+/g
-  ID = /[a-zA-Z_]\w*/g
-  NUM = /\b\d+(\.\d*)?([eE][+-]?\d+)?\b/g
-  STRING = /('(\\.|[^'])*'|"(\\.|[^"])*")/g
-  ONELINECOMMENT = /\/\/.*/g
-  MULTIPLELINECOMMENT = /\/[*](.|\n)*?[*]\//g
-  COMPARISONOPERATOR = /[<>=!]=|[<>]/g
-  ADDSUBOP = /[+-]/g
-  MULTDIVOP = /[*\/]/g
-  ONECHAROPERATORS = /([=()&|;:,\.<>{}[\]])/g
-
   tokens = [
-    WHITES
-    ID
-    NUM
-    STRING
-    ONELINECOMMENT
-    MULTIPLELINECOMMENT
-    COMPARISONOPERATOR
-    ADDSUBOP
-    MULTDIVOP
-    ONECHAROPERATORS
+    WHITES: /\s+/g
+    ID: /[a-zA-Z_]\w*/g
+    NUM: /\b\d+(\.\d*)?([eE][+-]?\d+)?\b/g
+    STRING: /('(\\.|[^'])*'|"(\\.|[^"])*")/g
+    ONELINECOMMENT: /\/\/.*/g
+    MULTIPLELINECOMMENT: /\/[*](.|\n)*?[*]\//g
+    COMPARISONOPERATOR: /[<>=!]=|[<>]/g
+    ADDSUBOP = /[+-]/g
+    MULTDIVOP = /[*\/]/g
+    ONECHAROPERATORS: /([-+*\/=()&|;:,{}[\]])/g
   ]
-
-  RESERVED_WORD = 
-    p:    "P"
-    "if": "IF"
-    then: "THEN"
+  RESERVED_WORD =
+    p: "P" 
+    "const": "CONST" 
+    "var": "VAR" 
+    procedure: "PROCEDURE" 
+    call: "CALL" 
+    begin: "BEGIN" 
+    end: "END" 
+    "if": "IF" 
+    "then": "THEN" 
+    "while": "WHILE" 
+    "do": "DO" 
+    "odd": "ODD"
   
   # Make a token object.
   make = (type, value) ->
@@ -140,6 +136,93 @@ parse = (input) ->
             input.substr(lookahead.from) + "'"
     return
 
+
+  program = ->
+    result = block()
+    if lookahead and lookahead.type is "."
+      match "."
+    else
+      throw "Syntax Error. Expected '.' at the end of the program"
+    result
+
+  block = ->
+    results = []
+    if lookahead and lookahead.type is "CONST"
+       match "CONST"
+       constant = ->
+         result = null
+         if lookahead and lookahead.type is "ID"
+           left =
+             type: "CONST ID"
+             value: lookahead.value
+           match "ID"
+           match "="
+           if lookahead and lookahead.type is "NUM"
+             right =
+               type: "NUM"
+               value: lookahead.value
+             match "NUM"
+           else # Error!
+             throw "Syntax Error. Expected NUM but found " + 
+                   (if lookahead then lookahead.value else "end of input") + 
+                   " near '#{input.substr(lookahead.from)}'"
+         else # Error!
+           throw "Syntax Error. Expected ID but found " + 
+                 (if lookahead then lookahead.value else "end of input") + 
+                 " near '#{input.substr(lookahead.from)}'"
+         result =
+           type: "="
+           left: left
+           right: right
+         result
+       results.push constant()
+       while lookahead and lookahead.type is ","
+         match ","
+         results.push constant()
+       match ";"
+    
+    if lookahead and lookahead.type is "VAR"
+       match "VAR"
+       variable = ->
+         result = null
+         if lookahead and lookahead.type is "ID"
+           result =
+             type: "VAR ID"
+             value: lookahead.value
+           match "ID"
+         else # Error!
+           throw "Syntax Error. Expected ID but found " + 
+                 (if lookahead then lookahead.value else "end of input") + 
+                 " near '#{input.substr(lookahead.from)}'"
+         result
+       results.push variable()
+       while lookahead and lookahead.type is ","
+         match ","
+         results.push variable()
+       match ";"
+  
+    procedure = ->
+      result = null
+      match "PROCEDURE"
+      if lookahead and lookahead.type is "ID"
+        value = lookahead.value
+        match "ID"
+        match ";"
+        result =
+          type: "PROCEDURE"
+          value: value
+          left: block()
+        match ";"
+      else # Error!
+        throw "Syntax Error. Expected ID but found " + 
+              (if lookahead then lookahead.value else "end of input") + 
+              " near '#{input.substr(lookahead.from)}'"
+      result
+    while lookahead and lookahead.type is "PROCEDURE"
+      results.push procedure()
+    results.push statement()
+    results
+
   statements = ->
     result = [statement()]
     while lookahead and lookahead.type is ";"
@@ -153,12 +236,11 @@ parse = (input) ->
       left =
         type: "ID"
         value: lookahead.value
-
       match "ID"
-      match "="
+      match ":="
       right = expression()
       result =
-        type: "="
+        type: ":="
         left: left
         right: right
     else if lookahead and lookahead.type is "P"
@@ -167,6 +249,19 @@ parse = (input) ->
       result =
         type: "P"
         value: right
+    else if lookahead and lookahead.type is "CALL"
+      match "CALL"
+      result =
+        type: "CALL"
+        value: lookahead.value
+      match "ID"
+    else if lookahead and lookahead.type is "BEGIN"
+      match "BEGIN"
+      result = [statement()]
+      while lookahead and lookahead.type is ";"
+        match ";"
+        result.push statement()
+      match "END"
     else if lookahead and lookahead.type is "IF"
       match "IF"
       left = condition()
@@ -176,24 +271,40 @@ parse = (input) ->
         type: "IF"
         left: left
         right: right
+    else if lookahead and lookahead.type is "WHILE"
+      match "WHILE"
+      left = condition()
+      match "DO"
+      right = statement()
+      result =
+        type: "WHILE"
+        left: left
+        right: right
     else # Error!
       throw "Syntax Error. Expected identifier but found " + 
-        (if lookahead then lookahead.value else "end of input") + 
-        " near '#{input.substr(lookahead.from)}'"
+            (if lookahead then lookahead.value else "end of input") + 
+            " near '#{input.substr(lookahead.from)}'"
     result
 
   condition = ->
-    left = expression()
-    type = lookahead.value
-    match "COMPARISON"
-    right = expression()
-    result =
-      type: type
-      left: left
-      right: right
+    if lookahead and lookahead.type is "ODD"
+      match "ODD"
+      right = expression()
+      result =
+        type: "ODD"
+        value: right
+    else
+    	left = expression()
+    	type = lookahead.value
+    	match "COMPARISON"
+    	right = expression()
+    	result =
+          type: type
+          left: left
+          right: right
     result
 
-   expression = ->
+  expression = ->
     result = term()
     while lookahead and lookahead.type is "ADDSUBOP"
       type = lookahead.value
@@ -205,7 +316,7 @@ parse = (input) ->
         right: right
     result
 
- term = ->
+  term = ->
     result = factor()
     while lookahead and lookahead.type is "MULTDIVOP"
       type = lookahead.value
@@ -237,13 +348,13 @@ parse = (input) ->
       match ")"
     else # Throw exception
       throw "Syntax Error. Expected number or identifier or '(' but found " + 
-        (if lookahead then lookahead.value else "end of input") + 
-        " near '" + input.substr(lookahead.from) + "'"
+            (if lookahead then lookahead.value else "end of input") + 
+            " near '" + input.substr(lookahead.from) + "'"
     result
 
-  tree = statements(input)
+  tree = program(input)
   if lookahead?
     throw "Syntax Error parsing statements. " + 
-      "Expected 'end of input' and found '" + 
-      input.substr(lookahead.from) + "'"  
+          "Expected 'end of input' and found '" + 
+          input.substr(lookahead.from) + "'"  
   tree

@@ -137,6 +137,93 @@ parse = (input) ->
             input.substr(lookahead.from) + "'"
     return
 
+  program = ->
+    result = block()
+    if lookahead and lookahead.type is "."
+      match "."
+    else
+      throw "Syntax Error. Expected '.' Remember to end your program with '.'"
+    result
+
+  block = ->
+    results = []
+
+    if lookahead and lookahead.type is "CONST"
+       match "CONST"
+       constante = ->
+         result = null
+         if lookahead and lookahead.type is "ID"
+           left =
+             type: "Const ID"
+             value: lookahead.value
+           match "ID"
+           match "="
+           if lookahead and lookahead.type is "NUM"
+             right =
+               type: "NUM"
+               value: lookahead.value
+             match "NUM"
+           else # Error!
+             throw "Syntax Error. Expected NUM but found " + 
+                   (if lookahead then lookahead.value else "end of input") + 
+                   " near '#{input.substr(lookahead.from)}'"
+         else # Error!
+           throw "Syntax Error. Expected ID but found " + 
+                 (if lookahead then lookahead.value else "end of input") + 
+                 " near '#{input.substr(lookahead.from)}'"
+         result =
+           type: "="
+           left: left
+           right: right
+         result
+       results.push constante()
+       while lookahead and lookahead.type is ","
+         match ","
+         results.push constante()
+       match ";"
+    
+    if lookahead and lookahead.type is "VAR"
+       match "VAR"
+       variable = ->
+         result = null
+         if lookahead and lookahead.type is "ID"
+           result =
+             type: "Var ID"
+             value: lookahead.value
+           match "ID"
+         else # Error!
+           throw "Syntax Error. Expected ID but found " + 
+                 (if lookahead then lookahead.value else "end of input") + 
+                 " near '#{input.substr(lookahead.from)}'"
+         result
+       results.push variable()
+       while lookahead and lookahead.type is ","
+         match ","
+         results.push variable()
+       match ";"
+  
+    proced = ->
+      result = null
+      match "PROCEDURE"
+      if lookahead and lookahead.type is "ID"
+        value = lookahead.value
+        match "ID"
+        match ";"
+        result =
+          type: "Procedure"
+          value: value
+          left: block()
+        match ";"
+      else # Error!
+        throw "Syntax Error. Expected ID but found " + 
+              (if lookahead then lookahead.value else "end of input") + 
+              " near '#{input.substr(lookahead.from)}'"
+      result
+    while lookahead and lookahead.type is "PROCEDURE"
+      results.push proced()
+    results.push statement()
+    results
+
   statements = ->
     result = [statement()]
     while lookahead and lookahead.type is ";"

@@ -1,3 +1,7 @@
-a = 4*2;
-b = 2*(a+1);
-p b
+VAR a, b;
+
+BEGIN
+   q = 4*2;
+   x = 2*(a+1);
+   END
+END.

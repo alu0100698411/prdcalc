@@ -1,115 +1,60 @@
 
 var assert = chai.assert;
 
-suite('Pruebas Unitarias para el lexer del parseador de ficheros tipo INI', function() {
+suite('Tokens', function(){
+  // Probar la función bexec
+  test('RegExp.bexec()', function(){
+    var input_str = "prueba";
+	var regexp = /ba/;
+	regexp.lastIndex = 0;
+
+	assert.equal(regexp.bexec(input_str), null);
+  });
+
+  // Probar la función String.tokens sobre una string sencilla.
+  test('String.tokens()', function(){
+    var input_str = "var a = b;";
+    var esperado_str = "[{\"type\":\"ID\",\"value\":\"var\",\"from\":0,\"to\":3},{\"type\":\"ID\",\"value\":\"a\",\"from\":4,\"to\":5},{\"type\":\"=\",\"value\":\"=\",\"from\":6,\"to\":7},{\"type\":\"ID\",\"value\":\"b\",\"from\":8,\"to\":9},{\"type\":\";\",\"value\":\";\",\"from\":9,\"to\":10}]";
+	var resultado_str = JSON.stringify(input_str.tokens());
+
+	assert.equal(esperado_str, resultado_str);
+  });
   
-    test('Captacion del header', function() {
-        var tokens = lexer('[HOLA]');
-		assert.equal(tokens[0].type,'header');
-    });
-    
-    test('Captacion de asignaciones', function() {
-        var tokens = lexer('ejemplo = hola');
-		assert.equal(tokens[0].type,'nameEqualValue');
-    });
-    
-    test('Captacion de asignaciones multilinea', function() {
-        var tokens = lexer('ejemplo =  /  \nhola');
-		assert.equal(tokens[0].type,'nameEqualValue');
-    });
+  // Probar con un error sencillo.
+  test('String.tokens(): Exccepción de error', function(){
+    var input_str = "#ERROR#";
+	var resultado_str = "Syntax error near '#ERROR#'";
 
-    test('Captacion de asignaciones con comentarios multilinea', function() {
-        var tokens = lexer('four   = hello \  # comments work here, too  \nmultiple \        # and here !!! \nmultilines \       # and even here (OMG) \nyeah ');
-		assert.equal(tokens[0].type,'nameEqualValue');
-		assert.equal(tokens[1].type,'nameEqualComments');
-    });
-
-
-    test('Captacion de comentarios', function() {
-        var tokens = lexer(';Esto es un comentario');
-		assert.equal(tokens[0].type,'comments');
-    });
-
-
-    test('Captacion de espacios en blanco', function() {
-        var tokens = lexer(' 	');
-		assert.equal(tokens[0].type,'blanks');
-    });
-    
-    test('Captacion de errores', function() {
-        var tokens = lexer('12345****');
-		assert.equal(tokens[0].type,'error');
-    });
-    
-});
-suite('Pruebas Unitarias para los tokens del parseador de ficheros tipo INI', function() {
-	test('Token comentario 1', function() {
-		var input = "; comments should be ignored";
-		var tokens = lexer(input);
-		var pretty = tokensToString(tokens);
-		assert.equal(pretty, '<ol>\n\n\t\t<li> <span class = "comments"> {\n  "type": "comments",\n  "match": [\n    "; comments should be ignored",\n    " comments should be ignored"\n  ]\n} </span>\n\t</ol>');
-    });
-	test('Token comentario 2', function() {
-		var input = "# comments should be ignored";
-		var tokens = lexer(input);
-		var pretty = tokensToString(tokens);
-		assert.equal(pretty, '<ol>\n\n\t\t<li> <span class = "comments"> {\n  "type": "comments",\n  "match": [\n    "# comments should be ignored",\n    " comments should be ignored"\n  ]\n} </span>\n\t</ol>');
-    });
-	test('Token cabecera', function() {
-		var input = "[section_one]";
-		var tokens = lexer(input);
-		var pretty = tokensToString(tokens);
-		assert.equal(pretty, '<ol>\n\n\t\t<li> <span class = "header"> {\n  "type": "header",\n  "match": [\n    "[section_one]",\n    "section_one"\n  ]\n} </span>\n\t</ol>');
-    });
-	test('Token blanks', function() {
-		var input = '\r\n\r\n';
-		var tokens = lexer(input);
-		var pretty = tokensToString(tokens);
-		assert.equal(pretty, '<ol>\n\n\t\t<li> <span class = "blanks"> {\n  "type": "blanks",\n  "match": [\n    "\\r\\n\\r\\n"\n  ]\n} </span>\n\t</ol>');
-    });	
-
-	test('Token variable 1: entrecomillada', function() {
-		var input = 'five = \"multiple lines  inside of quotations  preserve everything\"';
-		var tokens = lexer(input);
-		var pretty = tokensToString(tokens);
-		assert.equal(pretty, '<ol>\n\n\t\t<li> <span class = "nameEqualValue"> {\n  "type": "nameEqualValue",\n  "match": [\n    "five = \\"multiple lines  inside of quotations  preserve everything\\"",\n    "five ",\n    "multiple lines  inside of quotations  preserve everything"\n  ]\n} </span>\n\t</ol>');
-    });	
-	test('Token variable 2: multilinea', function() {
-		var input = 'three   = hello \\\r\nmultiline';
-		var tokens = lexer(input);
-		var pretty = tokensToString(tokens);
-		assert.equal(pretty, '<ol>\n\n\t\t<li> <span class = "nameEqualValue"> {\n  "type": "nameEqualValue",\n  "match": [\n    "three   = hello \\\\\\r\\nmultiline",\n    "three   ",\n    " hello multiline"\n  ]\n} </span>\n\t</ol>');
-    });	
-	test('Token variable 3: multilinea y comentarios', function() {
-		var input = 'four   = hello \\  # comments work here, too\r\nmultiple \\        # and here !!!\r\nmultilines \\       # and even here (OMG)\r\nyeah ; and even with another format!';
-		var tokens = lexer(input);
-		var pretty = tokensToString(tokens);
-		assert.equal(pretty, '<ol>\n\n\t\t<li> <span class = "nameEqualValue"> {\n  "type": "nameEqualValue",\n  "match": [\n    "four   = hello \\\\  # comments work here, too\\r\\nmultiple \\\\        # and here !!!\\r\\nmultilines \\\\       # and even here (OMG)\\r\\nyeah ; and even with another format!",\n    "four   ",\n    " hello multiple multilines yeah "\n  ]\n} </span>\n\t\n\t\t<li> <span class = "nameEqualComments"> {\n  "type": "nameEqualComments",\n  "match": [\n    "four   = hello \\\\  # comments work here, too\\r\\nmultiple \\\\        # and here !!!\\r\\nmultilines \\\\       # and even here (OMG)\\r\\nyeah ; and even with another format!",\n    "# comments work here, too ",\n    "# and here !!! ",\n    "# and even here (OMG) ",\n    "; and even with another format!"\n  ]\n} </span>\n\t</ol>');
-    });
-	test('Token variable 4: simple', function() {
-		var input = 'not_empty=full';
-		var tokens = lexer(input);
-		var pretty = tokensToString(tokens);
-		assert.equal(pretty, '<ol>\n\n\t\t<li> <span class = "nameEqualValue"> {\n  "type": "nameEqualValue",\n  "match": [\n    "not_empty=full",\n    "not_empty",\n    "full"\n  ]\n} </span>\n\t</ol>');
-    });
-	test('Token error', function() {
-		var input = 'not_empty15asg@r%';
-		var tokens = lexer(input);
-		var pretty = tokensToString(tokens);
-		assert.equal(pretty, '<ol>\n\n\t\t<li> <span class = "error"> {\n  "type": "error",\n  "match": [\n    "not_empty15asg@r%",\n    "%"\n  ]\n} </span>\n\t</ol>');
-    });
-
+    chai.expect(function () { input_str.tokens() }).to.throw(resultado_str);
+  });
 });
 
-suite('Pruebas Unitarias para localStorage', function() {
-	test('Soporte de localStorage', function() {
-		if(window.localStorage){
-		  localStorage.test = "test";
-		  assert.equal(localStorage.test, "test");
-		  localStorage.removeItem("test");
-		}
-    });
+suite('Parser', function(){
+  // Probamos el parser.
+  test('Parser', function(){
+	var input_str = "VAR x, squ;     PROCEDURE square;  BEGIN     squ = x * x  END;     BEGIN     x = 1;     WHILE x <= 10 DO     BEGIN        CALL square;        x = x + 1     END  END.";
+	var result = window.parse(input_str);
+	var esperado_str = "[\n    {\n        \"type\": \"Var ID\",\n        \"value\": \"x\"\n    },\n    {\n        \"type\": \"Var ID\",\n        \"value\": \"squ\"\n    },\n    {\n        \"type\": \"Procedure\",\n        \"value\": \"square\",\n        \"left\": [\n            [\n                {\n                    \"type\": \"=\",\n                    \"left\": {\n                        \"type\": \"ID\",\n                        \"value\": \"squ\"\n                    },\n                    \"right\": {\n                        \"type\": \"*\",\n                        \"left\": {\n                            \"type\": \"ID\",\n                            \"value\": \"x\"\n                        },\n                        \"right\": {\n                            \"type\": \"ID\",\n                            \"value\": \"x\"\n                        }\n                    }\n                }\n            ]\n        ]\n    },\n    [\n        {\n            \"type\": \"=\",\n            \"left\": {\n                \"type\": \"ID\",\n                \"value\": \"x\"\n            },\n            \"right\": {\n                \"type\": \"NUM\",\n                \"value\": 1\n            }\n        },\n        {\n            \"type\": \"WHILE\",\n            \"left\": {\n                \"type\": \"<=\",\n                \"left\": {\n                    \"type\": \"ID\",\n                    \"value\": \"x\"\n                },\n                \"right\": {\n                    \"type\": \"NUM\",\n                    \"value\": 10\n                }\n            },\n            \"right\": [\n                {\n                    \"type\": \"CALL\",\n                    \"value\": \"square\"\n                },\n                {\n                    \"type\": \"=\",\n                    \"left\": {\n                        \"type\": \"ID\",\n                        \"value\": \"x\"\n                    },\n                    \"right\": {\n                        \"type\": \"+\",\n                        \"left\": {\n                            \"type\": \"ID\",\n                            \"value\": \"x\"\n                        },\n                        \"right\": {\n                            \"type\": \"NUM\",\n                            \"value\": 1\n                        }\n                    }\n                }\n            ]\n        }\n    ]\n]";
 
+	var resultado_str, tree;
+    try {
+      tree = parse(input_str);
+      resultado_str = JSON.stringify(tree, null, 4);
+    } catch (e) {
+      resultado_str = JSON.stringify(e, null, 4);
+    }
+
+	assert.equal(esperado_str, resultado_str);
+  });
+  
+  // Probamos el parser con errores.
+  test('Parser: Errores', function(){
+  	var input_str = "error = $;";
+	var esperado_str = "Syntax error near '$;'";
+
+    chai.expect(function () { window.parse(input_str) }).to.throw(esperado_str);
+  });
 });
+
 
 

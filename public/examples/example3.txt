@@ -1,7 +1,1 @@
-VAR a, b;
-
-BEGIN
-   q = 4*2;
-   x = 2*(a+1);
-   END
-END.
+----

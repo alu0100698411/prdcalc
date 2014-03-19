@@ -40,20 +40,21 @@ ol
     |  Productions: 
     ol
       li
-        |  statements $ \rightarrow$ statement ';' statements $\vert$ statement 
+        |  $program \rightarrow block$ '.'
       li
-        |  statement $ \rightarrow$ ID '=' expression $\vert$ P expression 
-        |  $ \vert$ IF condition THEN statement 
+        |  $block \rightarrow$ $($'CONST' $ID$ '=' $NUM$ $($',' $ID$ '=' $NUM$$)$* ';'$)?$  $($'VAR' $ID$ $($',' $ID$$)$* ';'$)?$ $($'PROCEDURE' $ID$ ';' $block$ ';'$)*$ $statement$
       li
-        | condition $ \rightarrow$ expression ('=='|'!='|'<'|'<='|'>'|'>=') expression 
+        |  $statement \rightarrow$ $ID$ ':=' $expression \vert$ 'CALL' $ID$ $\vert$ 'BEGIN' $(statement$ ';'$)+$ 'END' $\vert$ 'IF' $condition$ 'THEN' $statement \vert$ 'WHILE' $condition$ 'DO' $statement$
       li
-        |  expression $ \rightarrow$ term '+' expression $\vert$ term 
+        |  $condition \rightarrow$ 'ODD' $expression \vert expression$ $($'='$\vert$'#'$\vert$'<'$\vert$'<='$\vert$'>'$\vert$'>='$)$ $expression$
       li
-        |  term $ \rightarrow$ factor '*' term $\vert$ factor 
+        |  $expression \rightarrow$ $($'+'$\vert$'-'$)$ $term$ $(($'+'$\vert$'-'$)$ $term)*$
       li
-        |  factor $ \rightarrow$ '(' expression ')' $\vert$ ID $ \vert$ NUM 
+        |  $term \rightarrow factor$ $(($'*'$\vert$'/'$)$ $factor)*$
+      li
+        |  $factor \rightarrow$ $ID$ $\vert$ $NUM$ $\vert$ '(' $expression$ ')'
   li
-    |  Start symbol: $statements$ 
+    |  Símbolo de arranque: $program$ 
 br
 br
 br

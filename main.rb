@@ -1,9 +1,9 @@
 require 'sinatra'
 # Avoid stopping and starting the server while in development
-require 'sinatra/reloader' if development?
+#require 'sinatra/reloader' if development?
 require 'slim'
 require 'sass'
-require 'v8'
+#require 'v8'
 require 'coffee-script'
 
 #configure do

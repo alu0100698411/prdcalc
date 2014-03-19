@@ -28,8 +28,7 @@ String::tokens = ->
   n = undefined # The number value.
   m = undefined # Matching
   result = [] # An array to hold the results.
-  # Tokens
-  tokens =
+  tokens = [
     WHITES: /\s+/g
     ID: /[a-zA-Z_]\w*/g
     NUM: /\b\d+(\.\d*)?([eE][+-]?\d+)?\b/g
@@ -37,24 +36,24 @@ String::tokens = ->
     ONELINECOMMENT: /\/\/.*/g
     MULTIPLELINECOMMENT: /\/[*](.|\n)*?[*]\//g
     COMPARISONOPERATOR: /[<>=!]=|[<>]/g
-    ADDSUBOP = /[+-]/g
-    MULTDIVOP = /[*\/]/g
+    ADDSUBOP: /[+-]/g
+    MULTDIVOP: /[*\/]/g
     ONECHAROPERATORS: /([-+*\/=()&|;:,{}[\]])/g
+  ]
   
-  # Reserved Words
-  RESERVED_WORD =
-    p: "P" 
-    "const": "CONST" 
-    "var": "VAR" 
-    procedure: "PROCEDURE" 
-    call: "CALL" 
-    begin: "BEGIN" 
-    end: "END" 
-    "if": "IF" 
-    "then": "THEN" 
-    "while": "WHILE" 
-    "do": "DO" 
-    "odd": "ODD"
+  RESERVED_WORD = 
+    P: "P" 
+    IF: "IF" 
+    THEN: "THEN" 
+    CONST: "CONST" 
+    VAR: "VAR" 
+    PROCEDURE: "PROCEDURE" 
+    CALL: "CALL" 
+    BEGIN: "BEGIN" 
+    END: "END" 
+    WHILE: "WHILE" 
+    DO: "DO" 
+    ODD: "ODD"
   
   # Make a token object.
   make = (type, value) ->
@@ -80,13 +79,13 @@ String::tokens = ->
     from = i
     
     # Ignore whitespace and comments
-    if m = WHITES.bexec(this) or 
-           (m = ONELINECOMMENT.bexec(this)) or 
-           (m = MULTIPLELINECOMMENT.bexec(this))
+    if m = tokens.WHITES.bexec(this) or 
+           (m = tokens.ONELINECOMMENT.bexec(this)) or 
+           (m = tokens.MULTIPLELINECOMMENT.bexec(this))
       getTok()
     
     # name.
-    else if m = ID.bexec(this)
+    else if m = tokens.ID.bexec(this)
       rw = RESERVED_WORD[m[0]]
       if rw
         result.push make(rw, getTok())
@@ -94,7 +93,7 @@ String::tokens = ->
         result.push make("ID", getTok())
     
     # number.
-    else if m = NUM.bexec(this)
+    else if m = tokens.NUM.bexec(this)
       n = +getTok()
       if isFinite(n)
         result.push make("NUM", n)
@@ -102,24 +101,24 @@ String::tokens = ->
         make("NUM", m[0]).error "Bad number"
     
     # string
-    else if m = STRING.bexec(this)
+    else if m = tokens.STRING.bexec(this)
       result.push make("STRING", 
                         getTok().replace(/^["']|["']$/g, ""))
     
     # comparison operator
-    else if m = COMPARISONOPERATOR.bexec(this)
+    else if m = tokens.COMPARISONOPERATOR.bexec(this)
       result.push make("COMPARISON", getTok())
 
-     # ADDSUBOP
-    else if m = ADDSUBOP.bexec(this)
+    # ADDSUBOP
+    else if m = tokens.ADDSUBOP.bexec(this)
       result.push make("ADDSUBOP", getTok())
 
-     # MULTDIVOP
-    else if m = MULTDIVOP.bexec(this)
+    # MULTDIVOP
+    else if m = tokens.MULTDIVOP.bexec(this)
       result.push make("MULTDIVOP", getTok())
-    
+	  
     # single-character operator
-    else if m = ONECHAROPERATORS.bexec(this)
+    else if m = tokens.ONECHAROPERATORS.bexec(this)
       result.push make(m[0], getTok())
     else
       throw "Syntax error near '#{@substr(i)}'"

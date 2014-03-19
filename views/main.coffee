@@ -28,7 +28,7 @@ String::tokens = ->
   n = undefined # The number value.
   m = undefined # Matching
   result = [] # An array to hold the results.
-  tokens = [
+  tokens =
     WHITES: /\s+/g
     ID: /[a-zA-Z_]\w*/g
     NUM: /\b\d+(\.\d*)?([eE][+-]?\d+)?\b/g
@@ -39,8 +39,7 @@ String::tokens = ->
     ADDSUBOP: /[+-]/g
     MULTDIVOP: /[*\/]/g
     ONECHAROPERATORS: /([-+*\/=()&|;:,{}[\]])/g
-  ]
-  
+ 
   RESERVED_WORD = 
     P: "P" 
     IF: "IF" 
@@ -324,7 +323,7 @@ parse = (input) ->
         (if lookahead then lookahead.value else "end of input") + 
         " near '" + input.substr(lookahead.from) + "'"
     result
-
+	
   tree = statements(input)
   if lookahead?
     throw "Syntax Error parsing statements. " + 

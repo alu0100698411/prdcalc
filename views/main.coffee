@@ -79,12 +79,12 @@ String::tokens = ->
     
     # Ignore whitespace and comments
     if m = tokens.WHITES.bexec(this) or 
-           (m = ONELINECOMMENT.bexec(this)) or 
-           (m = MULTIPLELINECOMMENT.bexec(this))
+           (m = tokens.ONELINECOMMENT.bexec(this)) or 
+           (m = tokens.MULTIPLELINECOMMENT.bexec(this))
       getTok()
     
     # name.
-    else if m = ID.bexec(this)
+    else if m = tokens.ID.bexec(this)
       rw = RESERVED_WORD[m[0]]
       if rw
         result.push make(rw, getTok())
@@ -100,7 +100,7 @@ String::tokens = ->
         make("NUM", m[0]).error "Bad number"
     
     # string
-    else if m = Stokens.TRING.bexec(this)
+    else if m = tokens.STRING.bexec(this)
       result.push make("STRING", 
                         getTok().replace(/^["']|["']$/g, ""))
     

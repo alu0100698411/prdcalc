@@ -78,7 +78,7 @@ String::tokens = ->
     from = i
     
     # Ignore whitespace and comments
-    if m = WHITES.bexec(this) or 
+    if m = tokens.WHITES.bexec(this) or 
            (m = ONELINECOMMENT.bexec(this)) or 
            (m = MULTIPLELINECOMMENT.bexec(this))
       getTok()
@@ -92,7 +92,7 @@ String::tokens = ->
         result.push make("ID", getTok())
     
     # number.
-    else if m = NUM.bexec(this)
+    else if m = tokens.NUM.bexec(this)
       n = +getTok()
       if isFinite(n)
         result.push make("NUM", n)
@@ -100,24 +100,24 @@ String::tokens = ->
         make("NUM", m[0]).error "Bad number"
     
     # string
-    else if m = STRING.bexec(this)
+    else if m = Stokens.TRING.bexec(this)
       result.push make("STRING", 
                         getTok().replace(/^["']|["']$/g, ""))
     
     # comparison
-    else if m = COMPARISONOPERATOR.bexec(this)
+    else if m = tokens.COMPARISONOPERATOR.bexec(this)
       result.push make("COMPARISON", getTok())
     
     # addsubop
-    else if m = ADDSUBOP.bexec(this)
+    else if m = tokens.ADDSUBOP.bexec(this)
       result.push make("ADDSUBOP", getTok())
     
     # multdivop
-    else if m = MULTDIVOP.bexec(this)
+    else if m = tokens.MULTDIVOP.bexec(this)
       result.push make("MULTDIVOP", getTok())
     
     # single-character operator
-    else if m = ONECHAROPERATORS.bexec(this)
+    else if m = tokens.ONECHAROPERATORS.bexec(this)
       result.push make(m[0], getTok())
     else
       throw "Syntax error near '#{@substr(i)}'"

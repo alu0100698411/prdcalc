@@ -5,9 +5,8 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../global.css" />
 	<link rel="stylesheet" href="mocha.css" />
-	<script type="text/javascript" src="../ini.js"></script>
+	<script type="text/javascript" src="main.coffee"></script>
      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
      <script src="../../views/main.coffee"></script>
@@ -15,25 +14,14 @@
 
   </head>
   <body>
-	<div id="mocha"></div>
-	<div id="wrapper">
 	<header>
-	    <section>
-			<h1>Predictive Recursive Descent Parser</h1>		
-	    </section>
-            <img src="" alt="Logo"> 720 x 180
-
 	<img src="https://camo.githubusercontent.com/81fdc153d7d26aba73a3a054e773dac42560e0a6/687474703a2f2f70726564696369746976657265637572736976657061727365722e6865726f6b756170702e636f6d2f696d616765732f6c6f676f2e706e67" width="720" alt="Logo" length="180"/>
-
-
-
-
         </header>
-		
-	</div>
+	<div id="mocha"></div>
+	<div id="wrapper"></div>
     <script src="chai.js"></script>
     <script src="mocha.js"></script>
-    <script src="../../views/main.coffee"></script>
+    <script src="main.coffee"></script>
     <script>mocha.setup('tdd')</script>
     <script src="tests.js"></script>
 

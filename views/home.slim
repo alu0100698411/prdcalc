@@ -1,14 +1,15 @@
 h1 What's this?
-p This website contains a simple example of a predictive parser. In computer science, a recursive descent parser is a kind of top-down parser built from a set of mutually recursive procedures (or a non-recursive equivalent) where each such procedure usually implements one of the production rules of the grammar. Thus the structure of the resulting program closely mirrors that of the grammar it recognizes.
-p A predictive parser is a recursive descent parser that does not require backtracking. Predictive parsing is possible only for the class of LL(k) grammars, which are the context-free grammars for which there exists some positive integer k that allows a recursive descent parser to decide which production to use by examining only the next k tokens of input. (The LL(k) grammars therefore exclude all ambiguous grammars, as well as all grammars that contain left recursion. Any context-free grammar can be transformed into an equivalent grammar that has no left recursion, but removal of left recursion does not always yield an LL(k) grammar.) A predictive parser runs in linear time.
-/img src="/images/st.gif" alt="Syntax Tree"
+p 
+  | This website contains a simple example of a predictive parser. In computer science, a recursive descent parser is a kind of top-down parser built from a set of mutually recursive procedures (or a non-recursive equivalent) where each such procedure usually implements one of the production rules of the grammar. Thus the structure of the resulting program closely mirrors that of the grammar it recognizes.
+p 
+  | A predictive parser is a recursive descent parser that does not require backtracking. Predictive parsing is possible only for the class of LL(k) grammars, which are the context-free grammars for which there exists some positive integer k that allows a recursive descent parser to decide which production to use by examining only the next k tokens of input. (The LL(k) grammars therefore exclude all ambiguous grammars, as well as all grammars that contain left recursion. Any context-free grammar can be transformed into an equivalent grammar that has no left recursion, but removal of left recursion does not always yield an LL(k) grammar.) A predictive parser runs in linear time.
+
 div#parser
-  p
-    | Load example to parse
+  h2 Load example to parse
   div
-    textarea#original[autofocus cols="80" rows="5"]
+    textarea#original[autofocus rows="10"]
   br
-  div
+  div.centered
     .loadfile
       button#example1[type="button" onclick="dump('/examples/example1.txt');"]
         | example1
@@ -44,7 +45,8 @@ div#parser
           }
           else { alert("Failed to load file"); }
         }
+		
+	input#PARSE.mylink[value="parse" type="button"]
 
 
-input#PARSE.mylink[value="parse" type="button"]
 pre#OUTPUT

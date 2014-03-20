@@ -13,6 +13,11 @@ h1 {
   font: 32px/1 $main-font;
 }
 
+h2 {
+	text-align:center;
+	font-weight:bold;
+}
+
 @mixin tabs ($background: blue, $color: yellow) {
   ul {
     list-style: none;
@@ -42,7 +47,8 @@ nav {
 }
 
 p {
-  font: 13px/1.4 $main-font;
+  font: 15px/1.6 $main-font;
+  text-align:justify;
 }
 
 label {
@@ -63,28 +69,26 @@ nav a.current {
   border: 1px solid $red;
 }
 
-#like {
-  p {
-    font-weight: bold;
-    color: $red;
-  }
-  input {
-    background: $red url(/images/like.png) 0 2px no-repeat;
-    border: darken($red, 10%) 1px solid;
-    height: 28px;
-    padding-left: 24px;
-  }
+#wrapper{
+	width:1250px;
 }
+
+#logo{
+	height:200px;
+	img{
+		height:100%;
+	}
+}
+
 
 .loadfile {
   background-color: $black;
-  border-radius: 5px;
-  border: 2px solid #DDD;
+  border-radius: 10px;
   line-height: 80px;
   
   //width: 75%;
   height: 20px;
-  padding: 5px;
+  padding:10px 10px 15px 10px;
 
   button, input {
     color: $black;

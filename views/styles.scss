@@ -15,6 +15,14 @@ h1 {
 	font-weight:bold;
 }
 
+h1 {
+	color: $black;
+	font: 32px/1 $main-font;
+	text-align:center;
+	font-weight:bold;
+}
+
+
 #original{
 	width:100%;
 }
@@ -77,9 +85,11 @@ nav a.current {
 
 #logo{
 	height:200px;
+	margin-bottom:5px;
 	img{
 		height:100%;
 	}
+	
 }
 
 
@@ -105,6 +115,20 @@ nav a.current {
   button:hover, input:hover {
     cursor:pointer;
   }
+  #PARSE{
+	margin-top: 10px;
+	border-radius: 10px;
+	padding: 10px;
+	border: none;
+	font-weight: bold;
+	background-color: $black;
+	color: $white;
+  }
+  #PARSE:hover{
+    cursor:pointer;
+	background-color: lighten($black, 50%);
+	color: $white;
+  }
 }
    
 .error {
@@ -117,8 +141,9 @@ nav a.current {
 }
 
 #OUTPUT {
+	padding:35px;
 	text-align:left;
 	color:$white;
     border-radius: 10px;
-	background-color: $black;
+	background-color: #000;
 }

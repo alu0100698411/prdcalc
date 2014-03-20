@@ -8,8 +8,10 @@ div#parser
   h1.centered Load example to parse below
   div
     textarea#original[autofocus rows="10"]
-  br
+
   div.centered
+	input#PARSE[value="CLICK HERE FOR PARSING" type="button"]
+	
     .loadfile
       button#example1[type="button" onclick="dump('/examples/example1.txt');"]
         | example1
@@ -46,7 +48,7 @@ div#parser
           else { alert("Failed to load file"); }
         }
 		
-	input#PARSE[value="PARSE NOW" type="button"]
+	
 
 
 pre#OUTPUT

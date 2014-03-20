@@ -6,10 +6,16 @@ main = ()->
     result = """<div class="error">#{result}</div>"""
 
   OUTPUT.innerHTML = result
-  
+  if window.localStorage
+    localStorage.original = original.value
+    localStorage.output = result;
+	
 window.onload = ()-> 
   PARSE.onclick = main
-
+  if window.localStorage && localStorage.original && localStorage.output
+    original.value = localStorage.original
+    OUTPUT.innerHTML = localStorage.output;
+	
 Object.constructor::error = (message, t) ->
   t = t or this
   t.name = "SyntaxError"

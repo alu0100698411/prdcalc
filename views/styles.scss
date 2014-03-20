@@ -9,13 +9,14 @@ body {
 }
 
 h1 {
-  color: $red;
-  font: 32px/1 $main-font;
+	color: $red;
+	font: 32px/1 $main-font;
+	text-align:left;
+	font-weight:bold;
 }
 
-h2 {
-	text-align:center;
-	font-weight:bold;
+#original{
+	width:100%;
 }
 
 @mixin tabs ($background: blue, $color: yellow) {
@@ -70,7 +71,8 @@ nav a.current {
 }
 
 #wrapper{
-	width:1250px;
+	width:1200px;
+	margin: 0 auto;
 }
 
 #logo{
@@ -86,7 +88,7 @@ nav a.current {
   border-radius: 10px;
   line-height: 80px;
   
-  //width: 75%;
+  width: 700px;
   height: 20px;
   padding:10px 10px 15px 10px;
 
@@ -112,4 +114,11 @@ nav a.current {
 
 .centered {
   text-align: center;
+}
+
+#OUTPUT {
+	text-align:left;
+	color:$white;
+    border-radius: 10px;
+	background-color: $black;
 }

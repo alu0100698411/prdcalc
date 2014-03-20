@@ -21,7 +21,7 @@ Enlace al despliegue de la aplicación en Heroku
 
 Enlace a la página de pruebas
 
-- Pruebas: <http://predicitiverecursiveparser.herokuapp.com/tests> http://predicitiverecursiveparser.herokuapp.com/tests </href>
+- Pruebas: <href a = http://predicitiverecursiveparser.herokuapp.com/tests> http://predicitiverecursiveparser.herokuapp.com/tests </href>
 
 ## GRAMMAR ##
 
@@ -31,9 +31,15 @@ Enlace a la página de pruebas
 
 <ul>
 
+<li>main.rb Contiene el código del servidor en Sinatra</li>
+
 <li>main.coffee Contiene el codígo en coffeeScript del analizador</li>
 
 <li>style.scss Hoja de estilo</li>
+
+<li>grammar.slim Contiene la gramática asociada a la práctica</li>
+
+<li>nav.slim Contiene la barra de navegación de la página</li>
 
 ## Tareas ##
 

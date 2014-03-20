@@ -10,4 +10,4 @@ suite('Pruebas para los tokens', function(){
 
 	assert.equal(esperado, resultado);
   });
-  
+});

@@ -15,12 +15,6 @@ h1 {
 	font-weight:bold;
 }
 
-.mochatitle {
-	color: $white;
-	font: 16px/1 $main-font;
-	text-align:left;
-	font-weight:bold;
-}
 
 #original{
 	width:100%;
@@ -143,9 +137,7 @@ nav a.current {
 .justified {
   text-align: justify;
 }
-.left{
-  text-align: left;
-}
+
 #OUTPUT {
 	padding:35px;
 	text-align:left;

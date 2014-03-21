@@ -7,5 +7,5 @@ nav
     li
       a href=="https://github.com/alu0100698411/prdcalc"  target="_blank" title="Repo" Github Repository
     li
-      a href=="tests"  title="Tests" Tests
+      a href=="tests/index.html"  title="Tests" Tests
 

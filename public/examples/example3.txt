@@ -1,1 +1,6 @@
-----
+BEGIN
+      IF x == 1
+THEN
+      x = x + 1
+
+END.

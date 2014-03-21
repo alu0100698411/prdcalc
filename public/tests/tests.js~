@@ -24,9 +24,9 @@ suite('Pruebas para los tokens', function(){
 suite('Pruebas para el parser', function(){
   // CAMBIAR POR UN EJEMPLO MAS SIMPLE
   test('Ejemplo de codigo para el parser', function(){
-	var input = "VAR x, squ;     PROCEDURE square;  BEGIN     squ = x * x  END;     BEGIN     x = 1;     WHILE x <= 10 DO     BEGIN        CALL square;        x = x + 1     END  END.";
+	var input = "BEGIN\n      x = x + 1\nEND.";
 	var result = window.parse(input);
-	var esperado = "[\n    {\n        \"type\": \"VAR ID\",\n        \"value\": \"x\"\n    },\n    {\n        \"type\": \"VAR ID\",\n        \"value\": \"squ\"\n    },\n    {\n        \"type\": \"PROCEDURE\",\n        \"value\": \"square\",\n        \"left\": [\n            [\n                {\n                    \"type\": \"=\",\n                    \"left\": {\n                        \"type\": \"ID\",\n                        \"value\": \"squ\"\n                    },\n                    \"right\": {\n                        \"type\": \"*\",\n                        \"left\": {\n                            \"type\": \"ID\",\n                            \"value\": \"x\"\n                        },\n                        \"right\": {\n                            \"type\": \"ID\",\n                            "value": "x"\n                        }\n                    }\n                }\n            ]\n        ]\n    },\n    [\n        {\n            \"type\": \"=\",\n            \"left\": {\n                \"type\": \"ID\",\n                \"value\": \"x\"\n            },\n            \"right\": {\n                \"type\": \"NUM\",\n                \"value\": 1\n            }\n        },\n        {\n            \"type\": \"WHILE\",\n            \"left\": {\n                \"type\": \"<=\",\n                \"left\": {\n                    \"type\": \"ID\",\n                    \"value\": \"x\"\n                },\n                \"right\": {\n                    \"type\": \"NUM\",\n                    \"value\": 10\n                }\n            },\n            \"right\": [\n                {\n                    \"type\": \"CALL\",\n                    \"value\": \"square\"\n                },\n                {\n                    \"type\": \"=\",\n                    \"left\": {\n                        \"type\": \"ID\",\n                        \"value\": \"x\"\n                    },\n                    \"right\": {\n                        \"type\": \"+\",\n                        \"left\": {\n                            \"type\": \"ID\",\n                            \"value\": \"x\"\n                        },\n                        \"right\": {\n                            \"type\": \"NUM\",\n                            \"value\": 1\n                        }\n                    }\n                }\n            ]\n        }\n    ]\n]";
+	var esperado = "";
 
 	var resultado, tree;
     try {
@@ -45,4 +45,23 @@ suite('Pruebas para el parser', function(){
 
     chai.expect(function () { window.parse(input) }).to.throw(esperado);
   });
+
+});
+
+
+suite('Pruebas Unitarias para localStorage', function() {
+	test('Soporte de localStorage (original)', function() {
+		if(window.localStorage){
+		  localStorage.original = "test";
+		  assert.equal(localStorage.original, "test");
+		  localStorage.removeItem("test");
+		}
+    });
+	test('Soporte de localStorage (output)', function() {
+		if(window.localStorage){
+		  localStorage.output = "test";
+		  assert.equal(localStorage.output, "test");
+		  localStorage.removeItem("test");
+		}
+    });
 });
